@@ -37,42 +37,42 @@ export default {
             steps: [
                 {
                     number: '1',
-                    title: 'Escolha a Categoria e Região',
+                    title: 'Escolha a Categoria e Cidade',
                     description:
-                        'Selecione a categoria do serviço (ex.: Pedreiro, Encanador) e informe sua cidade para encontrar trabalhadores próximos.',
+                        'Selecione a categoria do serviço (ex.: Pedreiro, Encanador) e informe sua cidade para encontrar prestadores próximos.',
                 },
                 {
                     number: '2',
-                    title: 'Escolha um Trabalhador',
+                    title: 'Escolha um Prestador',
                     description:
-                        'Veja o ranking dos mais bem avaliados e escolha o trabalhador com base em avaliações e portfólio.',
+                        'Veja o ranking dos mais bem avaliados e escolha o prestador com base em avaliações e portfólio.',
                 },
                 {
                     number: '3',
                     title: 'Contratação e Notificação',
                     description:
-                        'Envie uma solicitação. O trabalhador será notificado e decidirá se aceita. Após a aceitação, troque contatos via WhatsApp.',
+                        'Envie uma solicitação. O prestador será notificado e decidirá se aceita. Após a aceitação, troque contatos via WhatsApp.',
                 },
                 {
                     number: '4',
                     title: 'Avaliação Após o Serviço',
                     description:
-                        'Após o serviço, ambos (cliente e trabalhador) podem avaliar a experiência, com comentários e fotos para referência futura.',
+                        'Após o serviço, ambos (cliente e prestador) podem avaliar a experiência, com comentários e fotos para referência futura.',
                 },
             ],
             benefits: [
                 {
-                    icon: '✔',
+                    icon: '👤',
                     title: 'Para Clientes',
                     description: 'Encontre profissionais qualificados e avalie suas experiências.',
                 },
                 {
-                    icon: '✔',
-                    title: 'Para Trabalhadores',
+                    icon: '🛠️',
+                    title: 'Para Prestadores',
                     description: 'Aumente sua visibilidade com avaliações e construa um portfólio.',
                 },
                 {
-                    icon: '✔',
+                    icon: '🛡️',
                     title: 'Segurança',
                     description: 'Processo transparente com avaliações mútuas.',
                 },
@@ -88,133 +88,228 @@ export default {
     justify-content: center;
     align-items: flex-start;
     min-height: calc(100vh - 80px);
-    /* Ajusta para o espaço do header */
-    background-color: #f5f5f5;
-    /* Fundo cinza claro */
-    padding: 20px 0;
+    padding: 40px 20px;
+    font-family: 'Roboto', 'Arial', sans-serif;
 }
 
 .how-it-works-box {
-    background-color: #FFFFFF;
+    background-color: rgba(255, 255, 255, 0.95);
     padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     width: 100%;
-    max-width: 900px;
-    /* Ajustado para acomodar o conteúdo */
+    max-width: 1000px;
     text-align: left;
-    border: 2px solid #257BB8;
-    /* Borda azul */
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.how-it-works-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: #F4B400; /* Borda amarela no topo */
 }
 
 h1 {
-    font-size: 2rem;
-    color: #257BB8;
-    /* Título azul */
+    font-size: 2.5rem;
+    color: #257BB8; /* Cor azul da logo */
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    position: relative;
+    padding-bottom: 15px;
+    font-weight: 700;
+}
+
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: #F4B400; /* Linha amarela abaixo do título */
 }
 
 .intro-text {
-    font-size: 1.1rem;
-    color: #333;
-    margin-bottom: 30px;
+    font-size: 1.2rem;
+    color: #444;
+    margin-bottom: 40px;
     text-align: center;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
 }
 
 .steps-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
-    margin-bottom: 40px;
+    gap: 25px;
+    margin-bottom: 50px;
+    justify-content: center;
 }
 
 .step-card {
     flex: 1;
-    min-width: 200px;
+    min-width: 220px;
     background-color: #FFFFFF;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #257BB8;
-    /* Borda azul */
-    transition: transform 0.2s, box-shadow 0.2s;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    border: none;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.step-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background-color: #257BB8; /* Borda lateral azul */
 }
 
 .step-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
 }
 
 .step-number {
-    font-size: 1.5rem;
-    color: #F4B400;
-    /* Amarelo para o número */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #FFFFFF;
     font-weight: bold;
-    margin-bottom: 10px;
-    text-align: center;
+    margin-bottom: 15px;
+    width: 40px;
+    height: 40px;
+    background-color: #F4B400; /* Fundo amarelo para o número */
+    border-radius: 50%;
 }
 
 .step-card h3 {
-    font-size: 1.2rem;
-    color: #257BB8;
-    /* Título azul */
-    margin-bottom: 10px;
+    font-size: 1.3rem;
+    color: #257BB8; /* Título azul */
+    margin-bottom: 12px;
+    font-weight: 600;
 }
 
 .step-card p {
     font-size: 1rem;
-    color: #666;
+    color: #555;
+    line-height: 1.5;
 }
 
 .benefits-section {
-    margin-top: 40px;
+    margin-top: 50px;
+    background-color: rgba(37, 123, 184, 0.05); /* Fundo azul claro */
+    padding: 30px;
+    border-radius: 12px;
 }
 
 .benefits-section h2 {
-    font-size: 1.5rem;
-    color: #257BB8;
-    /* Título azul */
+    font-size: 1.8rem;
+    color: #257BB8; /* Título azul */
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    position: relative;
+    padding-bottom: 12px;
+    font-weight: 600;
+}
+
+.benefits-section h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: #F4B400; /* Linha amarela abaixo do título */
 }
 
 .benefits-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
 }
 
 .benefit-card {
     background-color: #FFFFFF;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #257BB8;
-    /* Borda azul */
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     text-align: center;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .benefit-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .benefit-icon {
-    font-size: 1.5rem;
-    color: #F4B400;
-    /* Amarelo para o ícone */
-    margin-bottom: 10px;
+    font-size: 2rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background-color: #F4B400; /* Fundo azul para o ícone */
+    color: #FFFFFF;
+    border-radius: 50%;
+    font-style: normal;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(37, 123, 184, 0.25);
 }
 
 .benefit-card h3 {
-    font-size: 1.2rem;
-    color: #257BB8;
-    /* Título azul */
-    margin-bottom: 10px;
+    font-size: 1.3rem;
+    color: #257BB8; /* Título azul */
+    margin-bottom: 12px;
+    font-weight: 600;
 }
 
 .benefit-card p {
     font-size: 1rem;
-    color: #666;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .how-it-works-box {
+        padding: 30px 20px;
+    }
+    
+    .steps-container {
+        flex-direction: column;
+    }
+    
+    .step-card {
+        min-width: 100%;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .intro-text {
+        font-size: 1.1rem;
+    }
 }
 </style>

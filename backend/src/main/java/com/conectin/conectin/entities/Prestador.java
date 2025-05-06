@@ -3,14 +3,7 @@ package com.conectin.conectin.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,14 +20,18 @@ public class Prestador {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    private String servicosOferecidos;
-    private String portfolio;
+    private String descricao;
 
-    @ManyToMany
-    @JoinTable(
-        name = "prestador_especialidade",
-        joinColumns = @JoinColumn(name = "prestador_id"),
-        inverseJoinColumns = @JoinColumn(name = "especialidade_id")
-    )
-    private List<Especialidade> especialidades = new ArrayList<>();
+    private String disponibilidade;
+
+    private Float avaliacaoMedia;
+
+    @OneToMany(mappedBy = "prestador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Portfolio> portfolios = new ArrayList<>();
+
+    @OneToMany(mappedBy = "prestador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PrestadorCategoria> prestadorCategorias = new ArrayList<>();
+
+    @OneToMany(mappedBy = "prestador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CidadePrestador> cidadePrestadores = new ArrayList<>();
 }

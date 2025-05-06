@@ -1,79 +1,32 @@
 <template>
   <div id="app">
-    <!-- Menu de navegação com logo -->
-    <header class="navbar">
-      <div class="navbar-container">
-        <img src="../public/images/logoConectin-removebg.png" alt="Conectin Logo" class="logo" />
-        <nav>
-          <router-link to="/">Home</router-link> |
-          <router-link to="/login">Login</router-link> |
-          <router-link to="/cadastro">Register</router-link> |
-          <router-link to="/comofunciona">Como funciona</router-link>
-        </nav>
-      </div>
-    </header>
-
-    <!-- Renderiza as rotas aqui -->
+    <Navbar />
     <router-view />
   </div>
 </template>
 
 <script>
+import Navbar from './components/NavBar.vue';
+
 export default {
-  name: 'App',
+  components: {
+    Navbar,
+  },
 };
 </script>
 
 <style>
-/* Estilos gerais */
+/* Global styles can go here if needed */
 body {
-  padding: 0;
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
-}
+    margin: 0;
+    padding: 0;
+  }
+#app {
 
-/* Estilos da Navbar */
-.navbar {
-  background-color: #257BB8; /* Cor de fundo solicitada */
-  padding: 15px 0;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para profundidade */
-}
-
-.navbar-container {
-  /* max-width: 1200px; */
-  /* margin: 0 auto; */
-  display: flex;
-  align-items: center;
-  /*justify-content: space-between;  Alinha logo à esquerda e links à direita */
-  padding: 0 20px;
-}
-
-.logo {
-  width: 100px; /* Ajuste conforme o tamanho do logo */
-  height: auto;
-  margin-right: 20px;
-}
-
-nav {
-  display: flex;
-  align-items: center;
-}
-
-nav a {
-  font-size: 20px;
-  font-weight: bold;
-  color: #FFFFFF; /* Links em branco para contraste com o fundo azul */
-  margin: 0 15px;
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-nav a:hover {
-  color: #F4B400; /* Amarelo do logo ao passar o mouse */
-}
-
-nav a.router-link-exact-active {
-  color: #F4B400; /* Amarelo do logo para o link ativo */
+  
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
 }
 </style>
