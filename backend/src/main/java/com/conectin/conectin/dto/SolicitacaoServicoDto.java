@@ -7,10 +7,10 @@ import lombok.Data;
 public class SolicitacaoServicoDto {
 
     @NotNull(message = "O ID do cliente é obrigatório")
-    private Integer clienteId;
+    private Long clienteId;
 
     @NotNull(message = "O ID do prestador é obrigatório")
-    private Integer prestadorId;
+    private Long prestadorId;
 
     @NotNull(message = "O ID da categoria é obrigatório")
     private Integer categoriaId;

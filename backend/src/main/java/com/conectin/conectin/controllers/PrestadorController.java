@@ -15,15 +15,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.conectin.conectin.dto.PrestadorDto;
+import com.conectin.conectin.dto.UsuarioDto;
 import com.conectin.conectin.entities.Categoria;
 import com.conectin.conectin.entities.Cidade;
 import com.conectin.conectin.entities.CidadePrestador;
 import com.conectin.conectin.entities.Prestador;
 import com.conectin.conectin.entities.PrestadorCategoria;
+import com.conectin.conectin.entities.Usuario;
 import com.conectin.conectin.repository.CategoriaRepository;
 import com.conectin.conectin.repository.CidadeRepository;
 import com.conectin.conectin.repository.PrestadorRepository;
 import com.conectin.conectin.services.PrestadorService;
+import com.conectin.conectin.services.UsuarioService;
 
 @RestController
 @RequestMapping("/api")
@@ -39,7 +42,7 @@ public class PrestadorController {
     private CategoriaRepository categoriaRepository;
 
     @Autowired
-    private CidadeRepository cidadeRepository;
+    private UsuarioService usuarioService;
 
     // Lista todas as categorias disponíveis
     @GetMapping("/categorias")
@@ -129,4 +132,16 @@ public class PrestadorController {
         return ResponseEntity.ok(dto);
     }
 
+
+
+
+            // O PerfilPrestador.vue chama api.get(`/prestadores/${id}`);
+    // Se esse ID for o ID do *Usuário* que é prestador, o endpoint /api/usuarios/{id} já serve.
+    // Se o frontend for mantido assim, você pode redirecionar ou duplicar a lógica:
+    // @GetMapping("/{id}")
+    // public ResponseEntity<UsuarioDto> getPerfilPrestador(@PathVariable Long id) {
+    //     // Reutiliza a lógica do UsuarioController.getPerfilPublicoUsuario
+    //     // ...
+    // }
+    // Por agora, instrua o frontend `PerfilPrestador.vue` a chamar `/api/usuarios/${id}`
 }

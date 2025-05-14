@@ -34,7 +34,12 @@
           <p>Nenhum item no portfólio.</p>
         </div>
         <div class="contact-section">
-          <a :href="whatsappLink" target="_blank" class="contact-btn">Entrar em Contato via WhatsApp</a>
+          <div v-if="solicitacaoAceita">
+            <p>Entre em contato via WhatsApp: <a :href="whatsappLink" target="_blank">{{ prestador.telefone }}</a></p>
+          </div>
+          <div v-else>
+            <a @click.prevent="enviarNotificacaoInteresse" class="contact-btn">Entrar em Contato</a>
+          </div>
         </div>
       </div>
       <div v-else class="loading">
@@ -42,46 +47,115 @@
         <p>Carregando perfil...</p>
       </div>
     </div>
-  </div>
+    </div>
+       <div v-if="avaliacoes.length > 0" class="avaliacoes-section">
+          <h3>Avaliações Recebidas</h3>
+          <ul>
+            <li v-for="av in avaliacoes" :key="av.id">
+              <p><strong>Nota: {{ av.nota }}</strong> - {{ av.comentario }}</p>
+              <small>Por: {{ av.avaliador.nome }} em {{ new Date(av.data).toLocaleDateString() }}</small>
+            </li>
+          </ul>
+        </div>
+      <div v-else class="loading">
+        <div class="loading-spinner"></div>
+        <p>Carregando perfil...</p>
+      </div>
+
 </template>
 
 <script>
 import api from '@/services/api';
 import { useToast } from 'vue-toastification';
+import { useUserStore } from '@/stores/user';
 
 export default {
   name: 'PerfilPrestador',
   data() {
     return {
       prestador: null,
+      avaliacoes: [],
+      solicitacaoAceita: false,
     };
   },
   setup() {
-    const toast = useToast();
-    return { toast };
+    return { toast : useToast() };
   },
   computed: {
     whatsappLink() {
-      const numero = '+5511999999999'; // Substitua pelo número real ou adicione ao PrestadorDto
+      const numero = this.prestador?.telefone; // Substitua pelo número real ou adicione ao PrestadorDto
       const mensagem = encodeURIComponent(`Olá, vi seu perfil no Conectin e gostaria de contratar seus serviços!`);
       return `https://wa.me/${numero}?text=${mensagem}`;
     },
   },
   mounted() {
     this.fetchPrestador();
+    this.verificarSolicitacaoAceita();
   },
   methods: {
-    async fetchPrestador() {
+      async fetchPrestador() {
       try {
         const id = this.$route.params.id;
-        const response = await api.get(`/prestadores/${id}`);
-        this.prestador = response.data;
+        const [perfilResponse, avaliacoesResponse] = await Promise.all([
+          api.get(`/prestadores/${id}`),
+          api.get(`/avaliacoes/recebidas/prestador/${id}`),
+        ]);
+        this.prestador = perfilResponse.data;
+        this.avaliacoes = avaliacoesResponse.data;
       } catch (error) {
-        if (error.response && error.response.data) {
-          this.toast.error(error.response.data.message);
-        } else {
-          this.toast.error('Erro ao carregar perfil do prestador.');
+        this.toast.error('Erro ao carregar perfil ou avaliações.');
+      }
+    },
+async verificarSolicitacaoAceita() {
+      try {
+        const userStore = useUserStore();
+        const clienteId = userStore.user?.id;
+        if (!clienteId) {
+          this.solicitacaoAceita = false;
+          return;
         }
+        const prestadorId = this.$route.params.id;
+        const response = await api.get(`/solicitacoes/cliente/${clienteId}/prestador/${prestadorId}/aceita`);
+        this.solicitacaoAceita = response.data.aceita;
+      } catch (error) {
+        this.toast.error('Erro ao verificar solicitação.');
+        this.solicitacaoAceita = false;
+      }
+    },
+    async enviarNotificacaoInteresse() {
+      console.log('1. Iniciando método');
+      console.log('2. Enviando notificação de interesse...');
+      try {
+        // Acesse o store de usuário
+        const userStore = useUserStore();
+        const clienteId = userStore.user?.id;
+
+        // Verifique se o usuário está logado
+        if (!clienteId) {
+          this.toast.error('Por favor, faça login para entrar em contato.');
+          this.$router.push('/login'); // Redireciona para o login
+          return;
+        }
+
+        const prestadorId = this.prestador?.id;
+        console.log('3. Valores:', { clienteId, prestadorId });
+
+        // Verifique se o prestadorId está disponível
+        if (!prestadorId) {
+          throw new Error('ID do prestador está indefinido');
+        }
+
+        // Envie a requisição para o backend
+        await api.post('/notificacoes/interesse', null, {
+          params: { prestadorId, clienteId },
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+        console.log('4. API retornou com sucesso');
+        this.toast.success('Notificação enviada ao prestador!');
+        window.open(this.whatsappLink, '_blank');
+      } catch (error) {
+        console.log('5. Erro:', error);
+        this.toast.error('Erro ao enviar notificação: ' + (error.message || 'Falha na requisição'));
       }
     },
   },

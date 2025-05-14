@@ -15,7 +15,7 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(nullable = false)
     private String nome;
@@ -29,7 +29,10 @@ public class Usuario {
     @Column(nullable = false)
     private String senha;
 
+    @Column(name = "foto_perfil")
     private String fotoPerfil;
+
+    private String telefone;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime dataCadastro;

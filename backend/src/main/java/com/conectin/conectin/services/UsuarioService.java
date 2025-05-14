@@ -70,6 +70,7 @@ public class UsuarioService {
         usuario.setNome(usuarioDto.getNome());
         usuario.setEndereco(usuarioDto.getEndereco());
         usuario.setEmail(usuarioDto.getEmail());
+        usuario.setTelefone(usuarioDto.getTelefone());
         usuario.setSenha(BCrypt.hashpw(usuarioDto.getSenha(), BCrypt.gensalt())); // Considere usar BCryptPasswordEncoder do Spring Security
         usuario.setFotoPerfil(usuarioDto.getFotoPerfil());
 

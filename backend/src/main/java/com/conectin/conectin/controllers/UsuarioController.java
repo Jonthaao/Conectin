@@ -43,9 +43,6 @@ public class UsuarioController {
     private PrestadorRepository prestadorRepository;
 
     @Autowired
-    private ClienteRepository clienteRepository;
-
-    @Autowired
     private JwtUtil jwtUtil;
 
     @PostMapping("/cadastrar")
@@ -108,6 +105,18 @@ public class UsuarioController {
             errorResponse.put("code", "SERVER_ERROR_001");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
+    }
+    private Usuario getUsuarioLogado(String token) {
+        if (token == null || !token.startsWith("Bearer ")) {
+            throw new CustomException(ErrorMessages.INVALID_TOKEN, ErrorMessages.INVALID_TOKEN_CODE);
+        }
+        String jwtToken = token.substring(7);
+        String username = jwtUtil.extractUsername(jwtToken); // email
+        if (!jwtUtil.validateToken(jwtToken, username)) { // Valida o token em si
+            throw new CustomException(ErrorMessages.EXPIRED_TOKEN, ErrorMessages.EXPIRED_TOKEN_CODE);
+        }
+        return usuarioRepository.findByEmail(username)
+                .orElseThrow(() -> new CustomException("Usuário não encontrado para o token fornecido.", "USER_NOT_FOUND_FOR_TOKEN"));
     }
 
     @GetMapping("/perfil")
@@ -202,35 +211,41 @@ public class UsuarioController {
     }
 
     @PutMapping("/editar/{id}")
-    public ResponseEntity<?> editarUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioDto usuarioDto,
-            @RequestHeader("Authorization") String token) {
-        if (token == null || !token.startsWith("Bearer ")) {
-            throw new CustomException(ErrorMessages.INVALID_TOKEN, ErrorMessages.INVALID_TOKEN_CODE);
-        }
-
-        String jwtToken = token.substring(7);
-        String username = jwtUtil.extractUsername(jwtToken);
-
-        if (!jwtUtil.validateToken(jwtToken, username)) {
-            throw new CustomException(ErrorMessages.EXPIRED_TOKEN, ErrorMessages.EXPIRED_TOKEN_CODE);
-        }
-
-        try {
-            Optional<Usuario> usuarioEditado = usuarioService.editarUsuario(id, usuarioDto);
-            if (usuarioEditado.isEmpty()) {
-                throw new CustomException(ErrorMessages.USER_NOT_FOUND, ErrorMessages.USER_NOT_FOUND_CODE);
-            }
-            return ResponseEntity.ok(new SuccessMessage(
-                    "Usuário editado com sucesso: " + usuarioEditado.get().getNome(), "USER_SUCCESS_003"));
-        } catch (IllegalArgumentException e) {
-            if (e.getMessage().contains("e-mail já existe")) {
-                throw new CustomException(ErrorMessages.EMAIL_ALREADY_EXISTS, ErrorMessages.EMAIL_ALREADY_EXISTS_CODE);
-            } else if (e.getMessage().contains("e-mail inválido")) {
-                throw new CustomException(ErrorMessages.INVALID_EMAIL, ErrorMessages.INVALID_EMAIL_CODE);
-            }
-            throw new CustomException("Erro ao editar usuário", "USER_ERROR_007");
-        }
+public ResponseEntity<?> editarUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioDto usuarioDto,
+        @RequestHeader("Authorization") String token) {
+    if (token == null || !token.startsWith("Bearer ")) {
+        throw new CustomException(ErrorMessages.INVALID_TOKEN, ErrorMessages.INVALID_TOKEN_CODE);
     }
+
+    String jwtToken = token.substring(7);
+    String username = jwtUtil.extractUsername(jwtToken);
+
+    if (!jwtUtil.validateToken(jwtToken, username)) {
+        throw new CustomException(ErrorMessages.EXPIRED_TOKEN, ErrorMessages.EXPIRED_TOKEN_CODE);
+    }
+
+    // Check if the authenticated user is editing their own profile
+    Usuario usuarioLogado = getUsuarioLogado(token);
+    if (!usuarioLogado.getId().equals(id)) {
+        throw new CustomException("Você não tem permissão para editar este usuário.", "USER_NOT_AUTHORIZED");
+    }
+
+    try {
+        Optional<Usuario> usuarioEditado = usuarioService.editarUsuario(id, usuarioDto);
+        if (usuarioEditado.isEmpty()) {
+            throw new CustomException(ErrorMessages.USER_NOT_FOUND, ErrorMessages.USER_NOT_FOUND_CODE);
+        }
+        return ResponseEntity.ok(new SuccessMessage(
+                "Usuário editado com sucesso: " + usuarioEditado.get().getNome(), "USER_SUCCESS_003"));
+    } catch (IllegalArgumentException e) {
+        if (e.getMessage().contains("e-mail já existe")) {
+            throw new CustomException(ErrorMessages.EMAIL_ALREADY_EXISTS, ErrorMessages.EMAIL_ALREADY_EXISTS_CODE);
+        } else if (e.getMessage().contains("e-mail inválido")) {
+            throw new CustomException(ErrorMessages.INVALID_EMAIL, ErrorMessages.INVALID_EMAIL_CODE);
+        }
+        throw new CustomException("Erro ao editar usuário: " + e.getMessage(), "USER_ERROR_007");
+    }
+}
 
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<?> deletarUsuario(@PathVariable Long id, @RequestHeader("Authorization") String token) {
@@ -267,5 +282,20 @@ public class UsuarioController {
 
         java.util.List<Usuario> usuarios = usuarioService.listarUsuarios();
         return ResponseEntity.ok(usuarios);
+    }
+
+        // Endpoint público para ver o perfil de OUTRO usuário (ex: cliente ver perfil de prestador, prestador ver de cliente)
+    // O PerfilCliente.vue e PerfilPrestador.vue podem usar este.
+    @GetMapping("/{id}") // Simplificado de /perfil-publico
+    public ResponseEntity<UsuarioDto> getPerfilPublicoUsuario(@PathVariable Long id) {
+        try {
+            // buscarPerfilCompletoDto pode expor dados como email.
+            // Para um perfil verdadeiramente público, você pode querer um DTO mais restrito.
+            // Por ora, para a apresentação, vamos usar o mesmo.
+            UsuarioDto perfilDto = usuarioService.buscarPerfilCompletoDto(id);
+            return ResponseEntity.ok(perfilDto);
+        } catch (IllegalArgumentException e) { // Usuário não encontrado
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 }

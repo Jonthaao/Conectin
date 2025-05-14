@@ -14,10 +14,10 @@ public class AvaliacaoDto {
     private Integer solicitacaoId;
 
     @NotNull(message = "O ID do avaliador é obrigatório")
-    private Integer avaliadorId;
+    private Long avaliadorId;
 
     @NotNull(message = "O ID do avaliado é obrigatório")
-    private Integer avaliadoId;
+    private Long avaliadoId;
 
     @Min(value = 1, message = "A nota deve ser no mínimo 1")
     @Max(value = 5, message = "A nota deve ser no máximo 5")

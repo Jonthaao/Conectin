@@ -12,7 +12,9 @@
   
         <!-- Menu direito (avatar/login) -->
         <div class="user-menu"> 
+          <NotificacaoDropdown v-if="user"/>
           <AvatarDropdown :default-avatar="defaultAvatar" />
+          
         </div>
       </div>
     </header>
@@ -20,8 +22,13 @@
   
   <script setup>
   import AvatarDropdown from './AvatarDropdown.vue';
+  import NotificacaoDropdown from './NotificacaoDropdown.vue';
+  import { useUserStore } from '@/stores/user';
+  import { computed } from 'vue';
   
   const defaultAvatar = 'https://www.gravatar.com/avatar/?d=mp';
+  const userStore = useUserStore();
+  const user = computed(() => userStore.user);
   </script>
   
   <style scoped>

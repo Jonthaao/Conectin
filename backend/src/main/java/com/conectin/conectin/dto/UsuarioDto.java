@@ -27,6 +27,7 @@ public class UsuarioDto {
     private boolean cliente;
 
     private String fotoPerfil;
+    private String telefone;
     private String descricao;
     private String disponibilidade;
     private List<CategoriaDto> categorias;

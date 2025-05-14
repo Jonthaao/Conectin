@@ -15,6 +15,7 @@ public class PrestadorDto {
     private long usuarioId;
     private String nome;
     private String descricao;
+    private String telefone;
     private String disponibilidade;
     private Float avaliacaoMedia;
     private List<Categoria> categorias;

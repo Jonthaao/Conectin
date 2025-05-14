@@ -4,6 +4,7 @@ import api from '@/services/api';
 export const useUserStore = defineStore('user', {
   state: () => ({
     user: null,
+    token: null,
   }),
   actions: {
     setUser(userData) {
